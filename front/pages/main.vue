@@ -58,19 +58,25 @@
 					<uni-row>
 						<uni-col :span="4" v-for="(item, i) in temp_5" :key="i+'b'">
 							<view class="rec_movie">
-								<image class="movie_img" :src="movie_pic[item]" mode="scaleToFill" @click="toDetail(item)">
+								<image class="movie_img" v-if="genre_index!=0" :src="movie_pic[item]" mode="scaleToFill" @click="toDetail(item)">
+								</image>
+								<image class="movie_img" v-if="genre_index==0" :src="movie_rec_pic[item]" mode="scaleToFill" @click="toDetail(item)">
 								</image>
 							</view>
-							<text class="rec_movie_name"> {{movie_name[item]}} </text>
+							<text class="rec_movie_name" v-if="genre_index!=0" > {{movie_name[item]}} </text>
+							<text class="rec_movie_name" v-if="genre_index==0" > {{movie_rec_name[item]}} </text>
 						</uni-col>
 					</uni-row>
 					<uni-row>
 						<uni-col :span="4" v-for="(item, i) in temp_10" :key="i+'b'">
 							<view class="rec_movie">
-								<image class="movie_img" :src="movie_pic[item]" mode="scaleToFill" @click="toDetail(item)"
-								></image>
+								<image class="movie_img" v-if="genre_index!=0" :src="movie_pic[item]" mode="scaleToFill" @click="toDetail(item)">
+								</image>
+								<image class="movie_img" v-if="genre_index==0" :src="movie_rec_pic[item]" mode="scaleToFill" @click="toDetail(item)">
+								</image>
 							</view>
-							<text class="rec_movie_name"> {{movie_name[item]}} </text>
+							<text class="rec_movie_name" v-if="genre_index!=0" > {{movie_name[item]}} </text>
+							<text class="rec_movie_name" v-if="genre_index==0" > {{movie_rec_name[item]}} </text>
 						</uni-col>
 					</uni-row>
 				</view>
@@ -112,6 +118,9 @@
 				movie_name: [],	// 电影名称
 				page:1,			// 页数
 				flag:false,		// 用户是否有点击动作
+				movie_rec_id:[],
+				movie_rec_pic: [],	// 推荐电影封面图片地址
+				movie_rec_name: [],	// 推荐电影名称
 			}
 		},
 		methods: {
@@ -129,8 +138,6 @@
 							this.movie_pic = res.data.result.url
 						},
 					})
-				}else{
-					
 				}
 
 			},
@@ -141,9 +148,9 @@
 					success: res => {
 						console.log(res)
 						this.genre_index = 0
-						this.movie_id = res.data.result.id
-						this.movie_name = res.data.result.name
-						this.movie_pic = res.data.result.url
+						this.movie_rec_id = res.data.result.id
+						this.movie_rec_name = res.data.result.name
+						this.movie_rec_pic = res.data.result.url
 					},
 				})
 				var { href } = this.$router.resolve({ path: "detail", query: { id:this.id, movie_id: this.movie_id[i] } });
@@ -193,9 +200,9 @@
 				url: 'http://82.156.202.134:23333/api/recom/hotmovie',
 				method: 'GET',
 				success: res => {
-					this.movie_id = res.data.result.id
-					this.movie_name = res.data.result.name
-					this.movie_pic = res.data.result.url
+					this.movie_rec_id = res.data.result.id
+					this.movie_rec_name = res.data.result.name
+					this.movie_rec_pic = res.data.result.url
 				},
 			})
 		}
