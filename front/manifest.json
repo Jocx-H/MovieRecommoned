@@ -71,7 +71,7 @@
     "vueVersion" : "2",
     "h5" : {
         "template" : "fix.html",
-        "domain" : "124.70.91.77",
+        "domain" : "82.156.202.134",
         "devServer" : {
             "port" : 8080,
             "https" : false
