@@ -110,7 +110,8 @@
 				movie_id:[],
 				movie_pic: [],	// 电影封面图片地址
 				movie_name: [],	// 电影名称
-				page:1,
+				page:1,			// 页数
+				flag:false,		// 用户是否有点击动作
 			}
 		},
 		methods: {
@@ -134,9 +135,22 @@
 
 			},
 			toDetail(i){
-				uni.navigateTo({
-					url: "/pages/detail?id=" + this.id + "&movie_id=" + this.movie_id[i],
+				uni.request({
+					url: 'http://82.156.202.134:11451/api/agri/recommovie?usr=' + this.id + '&curr_type=' + this.genre_index,
+					method: 'POST',
+					success: res => {
+						console.log(res)
+						this.genre_index = 0
+						this.movie_id = res.data.result.id
+						this.movie_name = res.data.result.name
+						this.movie_pic = res.data.result.url
+					},
 				})
+				var { href } = this.$router.resolve({ path: "detail", query: { id:this.id, movie_id: this.movie_id[i] } });
+				window.open(href, '_blank');
+				// uni.navigateTo({
+				// 	url: "/pages/detail?id=" + this.id + "&movie_id=" + this.movie_id[i],
+				// })
 			},
 			last(){
 				if (this.page > 1){
