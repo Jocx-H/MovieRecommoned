@@ -22,20 +22,6 @@ SIM_ITEMS = 100
 # 当前时间戳（最大时间戳）
 MAX_TIMESTAMP = 1537945149
 
-def perfer_cal(score,timestamp):
-    """
-    综合用户评分、时间戳得到一个综合评分
-    
-    param line:数据库中的一行数据
-    return:综合评分
-    """
-    total_sec = 24 * 60 * 60 * 365 * 10
-    delta = (MAX_TIMESTAMP - timestamp) / total_sec
-    # delta 越小，得分越高，最高分为1
-    timeWeight = round(1 / (1 + delta), 3)
-    return score * timeWeight
-
-
 class ItemBasedCF():
     def __init__(self, filename):
         """
@@ -77,6 +63,20 @@ class ItemBasedCF():
             self.calc_item_sim()
             self.save()
 
+    def perfer_cal(score,timestamp):
+        """
+        综合用户评分、时间戳得到一个综合评分
+        
+        param line:数据库中的一行数据
+        return:综合评分
+        """
+        total_sec = 24 * 60 * 60 * 365 * 10
+        delta = (MAX_TIMESTAMP - timestamp) / total_sec
+        # delta 越小，得分越高，最高分为1
+        timeWeight = round(1 / (1 + delta), 3)
+        return score * timeWeight
+
+
     def get_dataset(self):
         """
         读取数据集构建`用户-电影`矩阵
@@ -92,7 +92,7 @@ class ItemBasedCF():
                 item_id = line_list[1]
                 score = float(line_list[2])
                 timestamp = int(line_list[3])
-                prefer_score = perfer_cal(score, timestamp)
+                prefer_score = self.perfer_cal(score, timestamp)
                 self.user_item.setdefault(user_id, {})
                 self.user_item[user_id][item_id] = prefer_score
         print('='*10, '加载 %s 成功!' % self.filename, '='*10)
@@ -157,9 +157,11 @@ class ItemBasedCF():
                 rank.setdefault(related_item, 0)
                 rank[related_item] += w * float(rating) * curr_type_w
         res = sorted(rank.items(), key=itemgetter(1), reverse=True)[:REC_ITEMS]
-
-        print('推荐12部电影：', res)
-        return res
+        res_list = []
+        for i in res:
+            res_list.append(i[0])
+        print('推荐12部电影：', res_list)
+        return res_list
 
     def save(self):
         with open(os.path.join(DATA_PATH, self.item_sim_name), "w") as f:
