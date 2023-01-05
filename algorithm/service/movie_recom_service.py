@@ -17,7 +17,7 @@ from time import *
 from typing import List
 
 import json
-import numpy
+import numpy as np
 import os
 import random
 import sys
@@ -30,7 +30,7 @@ RATING_PATH = os.path.abspath(os.path.dirname(os.getcwd())) + "\data\ratings.csv
 DATA_PATH = os.path.abspath(os.path.dirname(os.getcwd())) + "\data"
 
 # 在首页/详情页推荐20部电影
-REC_ITEMS = 12
+REC_ITEMS = 24
 # 与目标电影相似的100部其他电影
 SIM_ITEMS = 100
 # 当前时间戳（最大时间戳）
@@ -245,7 +245,7 @@ def __intime__(args: List[str]):
 def __outtime__(args: List[str]):
     itemCF = ItemBasedCF(RATING_PATH)
     res_list = itemCF.item_rec(user=args[0], curr_type=args[1])
-    return res_list
+    return np.random.choice(res_list, 12).tolist()
 
 
 def __get_movies__(args: List[str]):
