@@ -23,10 +23,10 @@ router = APIRouter(
 )
 
 
-@router.get("/recommovie", responses={400: {"model": Code400}})
-def getRecomMovieList(usr: str, curr_type: str):
+@router.post("/recommovie", responses={400: {"model": Code400}})
+def getRecomMovieList(usr: str, curr_type: int):
     r"""
-    返回初始的热门电影
+    返回算法推荐后的热门电影
     """
     try:
         movies = movie_recom_service.getRecomMovieList([usr, curr_type])
